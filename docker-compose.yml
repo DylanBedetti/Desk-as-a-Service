@@ -1,33 +1,59 @@
 version: "3.8"
 services:
+
   mqtt:
     image: "eclipse-mosquitto:latest"
+    restart: always
     ports:
       - "1883:1883"
-    restart: always
+
   stepper:
-    image: "python:3.6"
-    # restart: always
-  buttons:
-    image: "python:3.6"
-    # restart: always
+    build: ./stepper
+    restart: always
+    secrets:
+      - db-password
+    environment:
+      STEPPER_RES: 400
+      DESK_HEIGHT: 120
+
   node-red:
     image: "nodered/node-red:latest"
+    restart: always
     ports:
       - "1880:1880"
-    restart: always
+
   db:
     image: "hypriot/rpi-mysql:latest"
+    restart: always
     ports:
       - "3306:3306"
-    restart: always
+    secrets:
+      - db-password
     environment:
-      MYSQL_ROOT_PASSWORD: raspberry
-  grafana:
-    image: "grafana/grafana:latest"
-    ports: 
-      - "3000:3000"
-  website:
-    image: "node:latest"
-  REST:
-    image: "node:latest"
+      MYSQL_ROOT_PASSWORD: /run/secrets/db-password
+      MYSQL_DATABASE: example
+
+  # buttons:
+  #     image: "python:3.6"
+  #     restart: always
+  # grafana:
+  #   image: "grafana/grafana:latest"
+  #   ports: 
+  #     - "3000:3000"
+  # website:
+  #   image: "node:latest"
+  # REST:
+  #   image: "node:latest"
+
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: db/password.txt
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.57.0/24
+
