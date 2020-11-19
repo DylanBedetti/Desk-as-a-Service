@@ -8,6 +8,7 @@ A manual stand-up desk that has been re-engineered into an electronically contro
 - when to have volumes? when to copy everything over from files?
 - best way to do development inside containers? how to ssh into?
 - setup github actions as that'd be cool
+- get sheet metal designed for desk support (and find supplier)
 
 # Architecture 
 ![overview](figures/Desk-as-a-Service.png)
